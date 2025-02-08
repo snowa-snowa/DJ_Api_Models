@@ -1,13 +1,20 @@
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField, StringRelatedField
-
 from .models import Driver, License, Library, Book, Student, Course
+
 
 class DriverSerializer(serializers.ModelSerializer):
 
-    license = serializers.HyperlinkedIdentityField(view_name='license-detail')
+    # license = serializers.HyperlinkedIdentityField(view_name='license-detail')
+    """показывает ссылку на объект. показывает ссылку на объект с тем же id что и у объекта связанного с ним моделя"""
 
-    # books = serializers.HyperlinkedIdentityField(view_name='book-detail')
+    # license = serializers.SlugRelatedField(read_only=True, slug_field='license_number')
+    """показывает выбранное поле объекта, но так как связь OneToOneField и у одного объекта этого моделя не может быть
+       несколько объектов другого моделя, нужно убрать часть кода (many=True)"""
+
+    license = serializers.StringRelatedField(read_only=True)
+    """показывает то что возвращается в admin или (object id). но так как связь OneToOneField и у одного объекта этого 
+    моделя не может быть несколько объектов другого моделя, нужно убрать часть кода (many=True)"""
 
     class Meta:
         model = Driver
@@ -16,70 +23,86 @@ class DriverSerializer(serializers.ModelSerializer):
 
 class LicenseSerializer(serializers.ModelSerializer):
 
+    driver = serializers.HyperlinkedIdentityField(view_name='driver-detail')
+    """показывает ссылку на объект. показывает ссылку на объект с тем же id что и у объекта связанного с ним моделя"""
+    """Не обязательно чтобы переменная была связывающей переменной между моделями, нужно лишь название самого моделя"""
 
+    # driver = serializers.SlugRelatedField(read_only=True, slug_field='name')
+    """показывает выбранное поле объекта, но так как связь OneToOneField и у одного объекта этого моделя не может быть
+       несколько объектов другого моделя, нужно убрать часть кода (many=True)"""
+
+    # driver = serializers.StringRelatedField(read_only=True)
+    """показывает то что возвращается в admin или (object id). но так как связь OneToOneField и у одного объекта этого 
+    моделя не может быть несколько объектов другого моделя, нужно убрать часть кода (many=True)"""
 
     class Meta:
         model = License
-        fields = ('id', 'license_number', 'issued_at')
+        fields = ('id', 'license_number', 'issued_at', 'driver')
+
 
 
 class LibrarySerializer(serializers.ModelSerializer):
 
     # books = serializers.HyperlinkedIdentityField(view_name='book-detail')
+    """можно использовать, но работать будет некорректно, так как HyperlinkedIdentityField предназначен для связи
+       моделей OneToOneField. покажет ссылку объекта с тем же id что и у объекта связанного с ним моделя, даже если такого
+       объекта не существует он все ровно покажет ссылку"""
 
     books = serializers.SlugRelatedField(many=True, read_only=True, slug_field='title')
+    """показывает выбранное поле объекта"""
 
     # books = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='book-detail')
+    """показывает ссылки на все объекты"""
 
     # books = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    """показывает id объектов"""
 
     # books = serializers.StringRelatedField(many=True, read_only=True)
+    """показывает главное поле объекта, его имя, название"""
 
     class Meta:
         model = Library
         fields = ('id', 'name', 'location', 'books')
 
 
-
 class BookSerializer(serializers.ModelSerializer):
 
+    # library = serializers.SlugRelatedField(read_only=True, slug_field='name')
+    """показывает выбранное поле объекта, но так как связь ForeignKey и у одного объекта этого моделя не может быть
+       несколько объектов другого моделя, нужно убрать часть кода (many=True)"""
 
+    # library = serializers.PrimaryKeyRelatedField(read_only=True)
+    """показывает id объекта. но так как связь ForeignKey и у одного объекта этого моделя не может быть
+       несколько объектов другого моделя, нужно убрать часть кода (many=True)"""
+
+    library = serializers.StringRelatedField(read_only=True)
+    """показывает главное поле объекта, его имя, название. но так как связь ForeignKey и у одного объекта этого моделя
+       не может быть несколько объектов другого моделя, нужно убрать часть кода (many=True)"""
 
     class Meta:
         model = Book
         fields = ('id', 'library', 'title',  'author')
 
 
+
 class StudentSerializer(serializers.ModelSerializer):
-    # Specify for every singer a single song as identity field
-    # song = serializers.HyperlinkedIdentityField(view_name='song-detail')
 
-    # SlugRelatedField is like StringRelatedField
-    # song = serializers.SlugRelatedField(many=True, read_only=True,
-    #                                     slug_field='title')
-
-    # When slug_field='duration', it will show duration of song
-    # song = serializers.SlugRelatedField(many=True, read_only=True,
-    #                                     slug_field='duration')
-
-    # Create clickable links for songs using HyperlinkedRelatedField
-    # song = serializers.HyperlinkedRelatedField(many=True, read_only=True,
-    #                                            view_name='song-detail')
-
-    # Show id of songs using PrimaryKeyRelatedField
-    # song = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-
-    """Add song field that has been defined in models.py in ForeignKey
-                relationship. It will show songs (title) associated with the singers"""
-
-    # song = serializers.StringRelatedField(many=True, read_only=True)
-
-    """Add song field that has been defined in models.py in ForeignKey
-            relationship. It will show songs associated with the singers"""
+    # courses = serializers.HyperlinkedIdentityField(view_name='course-detail')
+    """можно использовать, но работать будет некорректно, так как HyperlinkedIdentityField предназначен для связи
+       моделей OneToOneField. покажет ссылку объекта с тем же id что и у объекта связанного с ним моделя, даже если такого
+       объекта не существует он все ровно покажет ссылку"""
 
     courses = serializers.SlugRelatedField(many=True, read_only=True, slug_field='title')
+    """показывает выбранное поле объекта. не показывает поля в которых может быть несколько объектов"""
 
     # courses = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='course-detail')
+    """показывает ссылки на все объекты"""
+
+    # courses = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    """показывает id объектов"""
+
+    # courses = serializers.StringRelatedField(many=True, read_only=True)
+    """показывает главное поле объекта, его имя, название"""
 
     class Meta:
         model = Student
@@ -88,7 +111,22 @@ class StudentSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
 
-    students = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='student-detail')
+    # students = serializers.HyperlinkedIdentityField(view_name='student-detail')
+    """можно использовать, но работать будет некорректно, так как HyperlinkedIdentityField предназначен для связи
+       моделей OneToOneField. покажет ссылку объекта с тем же id что и у объекта связанного с ним моделя, даже если такого
+       объекта не существует он все ровно покажет ссылку"""
+
+    # students = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    """показывает выбранное поле объекта"""
+
+    # students = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='student-detail')
+    """показывает ссылки на все объекты"""
+
+    # students = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    """показывает id объектов"""
+
+    students = serializers.StringRelatedField(many=True, read_only=True)
+    """показывает главное поле объекта, его имя, название"""
 
     class Meta:
         model = Course

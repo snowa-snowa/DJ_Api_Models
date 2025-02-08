@@ -4,6 +4,31 @@ from .serializers import BookSerializer, CourseSerializer, StudentSerializer, Li
 from django_filters.rest_framework import DjangoFilterBackend
 
 
+class DriverViewSet(viewsets.ModelViewSet):
+    queryset = Driver.objects.all()
+    serializer_class = DriverSerializer
+
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['id', 'name', 'age']
+
+
+class LicenseViewSet(viewsets.ModelViewSet):
+    queryset = License.objects.all()
+    serializer_class = LicenseSerializer
+
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['id', 'license_number', 'issued_at', 'driver']
+
+
+
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ['id', 'title']
+
+
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -13,14 +38,8 @@ class BookViewSet(viewsets.ModelViewSet):
 
     # filter_backends = [DjangoFilterBackend]
     # filterset_fields  = ['title']
+    """не до конца проверено"""
 
-
-class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
-
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['id', 'title']
 
 
 class StudentViewSet(viewsets.ModelViewSet):
@@ -37,19 +56,3 @@ class LibraryViewSet(viewsets.ModelViewSet):
 
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['id', 'location', 'name']
-
-
-class LicenseViewSet(viewsets.ModelViewSet):
-    queryset = License.objects.all()
-    serializer_class = LicenseSerializer
-
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['id', 'license_number', 'issued_at', 'driver']
-
-
-class DriverViewSet(viewsets.ModelViewSet):
-    queryset = Driver.objects.all()
-    serializer_class = DriverSerializer
-
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['id', 'name', 'age']

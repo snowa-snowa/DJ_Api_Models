@@ -44,22 +44,16 @@ INSTALLED_APPS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
-        'django_filters.rest_framework.DjangoFilterBackend',
+        'django_filters.rest_framework.DjangoFilterBackend'
         # 'rest_framework.filters.SearchFilter',
         # 'rest_framework.filters.OrderingFilter',
     ),
 
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.IsAdminUser'
         'rest_framework.permissions.IsAuthenticatedOrReadOnly'
+        # 'rest_framework.permissions.IsAdminUser',
     ]
 }
-#
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAdminUser'
-#     ]
-# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
